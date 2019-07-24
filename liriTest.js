@@ -10,8 +10,8 @@ var moment = require("moment");
 var Spotify = require("node-spotify-api");
 
 
-var action = process.argv.slice(2).join('')
-var inputs = process.argv.slice(3).join(' ')
+var action = process.argv[2]
+var inputs = process.argv[3]
 var axios = require("axios");
 
 
@@ -52,41 +52,31 @@ function movie (movieName)
         if(!movieName){
           movieName = "Mr.Nobody";
         }
-        console.log("/n_Movie Info_ " + "Title:" + "Release Year: " + response.data.Year + "Rating" + response.data.Rated + "Country "+ response.data.Country + "Language:" + response.data.Language + "Plot:" + response.data.Plot + "Actors" + response.data.Actors);
+        console.log("\n_Movie Info_" + "\nTitle:" + response.data.Title + "\nRelease Year: " + response.data.Year + "\nRating" + response.data.Rated + "\nCountry "+ response.data.Country + "\nLanguage:" + response.data.Language + "\nPlot:" + response.data.Plot + "\nActors:" + response.data.Actors);
       });
   }
 
 
 
  
-// function concert(artist)
-// { 
-//   var concertUrl = "https://rest.bandsintown.com/artists" + artist + "/events?app_id=codingbootcamp";
+function concert(artist)
+{ 
+  var concertUrl = "https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp";
+
+  axios.get(concertUrl).then(function 
+    (response) {
+    console.log(response)
+     console.log(" Upcoming Events");
+     console.log("Artist: " + artist )
+     console.log("Venue: " + response.data[0].venue.name)
+     console.log("Location:" + response.data[0].venue.country)
+     console.log("Date:" + response.data[0].datatime + "Rock on");
+    }
+    )
   
+  }
 
-//   axios.get(concertUrl).then(function(response)
-//     {
-//      console.log(" Upcoming Events");
-//      console.log("Artist: " + artist + "Venue: " + response.data[0].venue.name +"Location:" + response.data[0].venue.country +  "Date:" + response.data[0].datatime + "Rock on");
-//     })
-  
-//   }
-// function concert(inputs)
-// {
-//     var queryUrl = "https://rest.bandsintown.com/artists" + inputs + "/events?app_id=codingbootcamp";
 
-//     request(queryUrl,function(error,response, body)
-//     {
-
-//         var results = JSON.parse(body)[0];
-//         if(!error && response.statusCode === 200)
-//         {
-//           console.log("City:" + results.venue.city);
-//           console.log("Venue Name:" + results.venue.name);
-//           console.log("Date of Event:" + moment(results.datatime).format("MM/DD/YYYY"));
-//         }
-//     });
-// };
 
 function doIt(inputs)
 {
@@ -123,4 +113,3 @@ spotify.search({type:"track", query: inputs},function(err,data)
 
 })
 }
-
