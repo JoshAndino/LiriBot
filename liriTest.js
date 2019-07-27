@@ -3,7 +3,6 @@ var axios = require("axios");
 
 //var
 var keys = require("./keys.js");
-var request = require("request");
 var fs = require("fs");
 var moment = require("moment");
 
@@ -11,8 +10,10 @@ var Spotify = require("node-spotify-api");
 
 
 var action = process.argv[2]
-var inputs = process.argv[3]
-var axios = require("axios");
+var inputs = process.argv.slice(3).join(" ")
+
+console.log(process.argv)
+console.log(inputs)
 
 
 
@@ -29,7 +30,7 @@ switch (action)
     break;
 
   case "do-what-it-says":
-    doIt(inputs);
+    doIt();
     break;
 
   case "concert-this":
@@ -65,12 +66,23 @@ function concert(artist)
 
   axios.get(concertUrl).then(function 
     (response) {
-    console.log(response)
-     console.log(" Upcoming Events");
-     console.log("Artist: " + artist )
-     console.log("Venue: " + response.data[0].venue.name)
-     console.log("Location:" + response.data[0].venue.country)
-     console.log("Date:" + response.data[0].datatime + "Rock on");
+for (var i = 0; i < response.data.length; i++)
+{
+  var date = response.data[i].datetime;
+  var formatDate = moment(date).format("MM-DD-YYYY")
+  // console.log(response)
+  console.log("Artist: " + artist )
+  console.log("Venue: " + response.data[i].venue.name)
+  console.log("Location: " + response.data[i].venue.country)
+  console.log("Date: " + formatDate + " Rock on \n");
+}
+    //  console.log(" Upcoming Events ");
+    //  console.log("Artist: " + artist )
+    //  console.log("Venue: " + response.data[0].venue.name)
+    //  console.log("Location: " + response.data[0].venue.country)
+    //  console.log("Date: " + formatDate + " Rock on");
+      
+
     }
     )
   
@@ -78,7 +90,7 @@ function concert(artist)
 
 
 
-function doIt(inputs)
+function doIt()
 {
   fs.readFile("random.txt", "utf-8", function(err,buf)
   {
@@ -88,10 +100,7 @@ function doIt(inputs)
 
 function spotify ()
 {
-var spotify = new Spotify({
-  id:process.env.SPOTIFY_ID,
-  secret: process.env.SPOTIFY_SECRET
-});
+var spotify = new Spotify(keys.spotify);
 
 if(!inputs)
 {
@@ -106,10 +115,14 @@ spotify.search({type:"track", query: inputs},function(err,data)
   }
 
   var songInfo = data.tracks.items;
-  console.log("Artist(s): " + songInfo[0].artists[0].name);
-  console.log ("Song Name: "+ songInfo[0].name);
-  console.log("Preview Link: " + songInfo[0].prewiew_url);
-  console.log("Album: " + songInfo[0].album.name)
+
+  for (var i = 0; i < songInfo.length; i++) {
+
+    console.log("Artist(s): " + songInfo[i].artists[0].name);
+    console.log ("Song Name: "+ songInfo[i].name);
+    console.log("Preview Link: " + songInfo[i].preview_url);
+    console.log("Album: " + songInfo[i].album.name + '\n')
+  }
 
 })
 }
